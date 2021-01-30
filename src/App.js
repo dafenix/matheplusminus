@@ -1,12 +1,10 @@
-import logo from './logo.svg';
 import Canvas from "./Canvas";
 import React, {useEffect, useState} from 'react';
-import ShowWindowDimensions, {useWindowSize} from "./ShowWindowDimensions";
 import './App.css';
 
 import Numpad from "./Numpad";
 import Button from "react-bootstrap/Button";
-import {Form, FormControl, Nav, Navbar, Modal} from "react-bootstrap";
+import {Nav, Navbar} from "react-bootstrap";
 import Splash from "./Splash";
 import SolvedModal from "./SolvedMessageBox";
 import Status from "./Status";
@@ -18,7 +16,7 @@ function App() {
     const [excercise, setExcercise] = useState('');
     const [excercises, setExcercises] = useState([]);
     const [solvedValid, setSolvedValid] = useState(false);
-    const [splashVisible, setSplash] = useState(true);
+    const [splashVisible, setSplash] = useState(false);
     const [show, setShow] = useState(false);
     const [index, setIndex] = useState(0);
 
@@ -58,7 +56,8 @@ function App() {
         return {
             left: left,
             right: right,
-            id: left + '' + right
+            id: left + '' + right,
+            solved: false
         }
     }
 
@@ -77,24 +76,54 @@ function App() {
         return excercises;
     }
 
+    const [onlyUnsolved, setOnlyUnsolved] = useState(false);
     const solve = () => {
-        const expected = excercise.left + excercise.right;
-        console.log('result', result);
-        console.log('expected', expected);
+        let expected = excercise.left + excercise.right;
+
+        if (excercises.indexOf(excercise) === excercises.length - 1) {
+            setOnlyUnsolved(true);
+            console.log('index', index);
+            var unsolved = excercises.filter(e => !e.solved);
+            if (unsolved.length > 0 ){
+                let newIndex = excercises.indexOf(unsolved[0]);
+                setIndex(newIndex);
+                setExcercise(unsolved[0]);
+                setResult('');
+                expected = unsolved[0].left + unsolved[0].right;
+            }
+        }
 
         if (parseInt(expected) === parseInt(result)) {
             setSolvedValid(true);
-            setResults([true]);
+            excercise.solved = true;
             //setShow(true);
         } else {
             setSolvedValid(false);
-            setResults([false]);
+            excercise.solved = false;
             setShow(true);
         }
-        setIndex(index+1);
-        setExcercise(excercises[index]);
+
+
         setResult('');
-        setResults([...results, parseInt(expected) === parseInt(result)]);
+        let resultsCopy = results;
+        resultsCopy[index] = parseInt(expected) === parseInt(result);
+        setResults(resultsCopy);
+        //setResults([...results, parseInt(expected) === parseInt(result)]);
+        let newIndex = index + 1;
+        if (onlyUnsolved) {
+            var unsolved = excercises.filter(e => !e.solved);
+            console.log('unsolvedX', unsolved);
+            if (unsolved.length === 0) {
+                return;
+            }
+            newIndex = excercises.indexOf(unsolved[0]);
+        }
+        if (newIndex > excercises.length - 1) {
+            return;
+        }
+        setIndex(newIndex);
+        setExcercise(excercises[newIndex]);
+
     }
 
     return (
