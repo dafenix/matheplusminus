@@ -1,17 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import lemming from './lemmling_Cartoon_dog.svg'
-import Button from "react-bootstrap/Button";
-import MultiPlayer, {useMultiAudio} from "./MultiPlayer";
 function Status(props) {
-    const elements = [1, 2, 3, 4, 5, 6, 7, 8, 9,0];
     const colors = ["black", "lightgreen", "red"];
     return (
         <div className="status">
-            {elements.map((value, index) => {
+            {props.excercises && props.excercises.map((value, index) => {
                 let color = colors[0];
-                if (props.results && props.results.length > index) {
-                    console.log('xxx',props.results);
+                /*if (props.results && props.results.length > index) {
                     color = props.results[index] ? colors[1] : props.results[index] === undefined ? colors[0] : colors[2];
+                }*/
+                const ex = props.excercises[index];
+                if (ex.solved === undefined) {
+                    color = colors[0];
+                } else if (ex.solved === false) {
+                    color = colors[2];
+                }
+                else if (ex.solved === true) {
+                    color = colors[1];
                 }
                 return <i key={index} className="fa fa-circle" aria-hidden="true" style={{color: color, fontSize: "30px", marginLeft: "5px"}}></i>
             })}

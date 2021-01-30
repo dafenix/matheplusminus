@@ -1,6 +1,6 @@
 import {Modal} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import React, {useState} from "react";
+import React from "react";
 
 function SolvedModal(props) {
     const titles = ["Hey Super!", "Schade das war leider nichts."];
@@ -10,7 +10,6 @@ function SolvedModal(props) {
 
     const getItem = (map) => {
         const idx = props.ok ? 0 : 1;
-        console.log('ok?',props.ok);
         return map[idx];
     }
     return (

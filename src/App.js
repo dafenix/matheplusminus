@@ -12,7 +12,6 @@ import Status from "./Status";
 function App() {
 
     const [result, setResult] = useState('');
-    const [results, setResults] = useState([]);
     const [excercise, setExcercise] = useState('');
     const [excercises, setExcercises] = useState([]);
     const [solvedValid, setSolvedValid] = useState(false);
@@ -57,12 +56,12 @@ function App() {
             left: left,
             right: right,
             id: left + '' + right,
-            solved: false
+            solved: undefined
         }
     }
 
     const buildExcercises = () => {
-        const max = 10;
+        const max = 2;
         let excercises = [];
         let ids = [];
         for (let i = 0; i < max; i++) {
@@ -80,18 +79,6 @@ function App() {
     const solve = () => {
         let expected = excercise.left + excercise.right;
 
-        if (excercises.indexOf(excercise) === excercises.length - 1) {
-            setOnlyUnsolved(true);
-            console.log('index', index);
-            var unsolved = excercises.filter(e => !e.solved);
-            if (unsolved.length > 0 ){
-                let newIndex = excercises.indexOf(unsolved[0]);
-                setIndex(newIndex);
-                setExcercise(unsolved[0]);
-                setResult('');
-                expected = unsolved[0].left + unsolved[0].right;
-            }
-        }
 
         if (parseInt(expected) === parseInt(result)) {
             setSolvedValid(true);
@@ -103,16 +90,28 @@ function App() {
             setShow(true);
         }
 
+        if (excercises.indexOf(excercise) === excercises.length - 1) {
+            setOnlyUnsolved(true);
+            console.log('index', index);
+            var unsolved = excercises.filter(e => e.solved === false);
+            if (unsolved.length > 0) {
+                const nextUnsolved = unsolved[0];
+                let newIndex = excercises.indexOf(nextUnsolved);
+                setIndex(newIndex);
+                setExcercise(nextUnsolved);
+                setResult('');
+                return;
+            }
+        }
+
+        if (excercises.filter(e => e.solved === true).length === excercises.length) {
+            console.log('fertig');
+        }
 
         setResult('');
-        let resultsCopy = results;
-        resultsCopy[index] = parseInt(expected) === parseInt(result);
-        setResults(resultsCopy);
-        //setResults([...results, parseInt(expected) === parseInt(result)]);
         let newIndex = index + 1;
         if (onlyUnsolved) {
-            var unsolved = excercises.filter(e => !e.solved);
-            console.log('unsolvedX', unsolved);
+            var unsolved = excercises.filter(e => e.solved === false);
             if (unsolved.length === 0) {
                 return;
             }
@@ -123,6 +122,7 @@ function App() {
         }
         setIndex(newIndex);
         setExcercise(excercises[newIndex]);
+
 
     }
 
@@ -140,7 +140,7 @@ function App() {
                     </Nav>
                 </Navbar>
             </>
-            <Status results={results}/>
+            <Status excercises={excercises}/>
             <Splash visible={splashVisible} setVisible={setSplash}/>
 
             {!splashVisible && <div>

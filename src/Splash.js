@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import lemming from './lemmling_Cartoon_dog.svg'
 import Button from "react-bootstrap/Button";
-import MultiPlayer, {useMultiAudio} from "./MultiPlayer";
+import {useMultiAudio} from "./MultiPlayer";
 function Splash(props) {
-    const [players, toggle] = useMultiAudio(["https://soundimage.org/wp-content/uploads/2020/09/Bass-Invaders.mp3"]);
+    const [, toggle] = useMultiAudio(["https://soundimage.org/wp-content/uploads/2020/09/Bass-Invaders.mp3"]);
 
     useEffect(() => {
 
