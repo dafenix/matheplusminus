@@ -11,12 +11,13 @@ const Canvas = props => {
         ctx.clearRect(10, 50, ctx.canvas.width, ctx.canvas.height)
         ctx.fillStyle = '#000000'
         let fontSize = 300;
+        if (!props.excercise) return;
         do {
             fontSize--;
             ctx.font = fontSize + "px " + "Arial";
         } while (ctx.measureText(props.placeholder + '00').width > ctx.canvas.width)
         const lineHeight = ctx.measureText('M').width;
-        ctx.fillText(props.excercise.left + ' '+props.excercise.type+' ' +props.excercise.right +' = ' + props.result, 0, lineHeight + 20);
+        ctx.fillText(props.excercise.render(props.result), 0, lineHeight + 20);
 
         //Placeholder for length of result to keep enough space
     }

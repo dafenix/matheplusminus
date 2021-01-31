@@ -61,7 +61,7 @@ function App() {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    const buildPlus = (max, maxCalcs) => {
+    const buildPlus = (max, maxCalcs, random) => {
         let left = 0;
         let right = 0;
         let calcs = 0;
@@ -78,13 +78,28 @@ function App() {
             id: left + '+' + right,
             type: '+',
             solved: undefined,
+            hide: random % 3 === 0 ? 0 : random % 2 === 0 ? 1 : 2,
+            render: function (result) {
+                const l = this.hide === 0 ? result.padStart(left.length,' ') : left;
+                const r = this.hide === 1 ? result.padStart(right.length,' ') : right;
+                const res = this.hide === 2 ? result.padStart((this.calc()+'').length,' ') : this.calc()+'';
+                return l + ' '+this.type+' ' +r +' = ' + res;
+            },
             calc: function() {
                 return left + right;
+            },
+            pseudoCalc: function(result) {
+                const resultAsInt = parseInt(result);
+                const l = this.hide === 0 ? resultAsInt : parseInt(left);
+                const r = this.hide === 1 ? resultAsInt : parseInt(right);
+                const res = this.hide === 2 ? resultAsInt : parseInt(l) + parseInt(r);
+                console.log('pseudoCalc',{l,r,res});
+                return l === left && r === right && this.calc() === res;
             }
         }
     }
 
-    const buildMinus = (max, maxCalcs) => {
+    const buildMinus = (max, maxCalcs, random) => {
         let left = 0;
         let right = 0;
         let calcs = 0;
@@ -101,8 +116,23 @@ function App() {
             id: left + '-' + right,
             type: '-',
             solved: undefined,
+            hide: random % 3 === 0 ? 0 : random % 2 === 0 ? 1 : 2,
+            render: function (result) {
+                const l = this.hide === 0 ? result.padStart(left.length,' ') : left;
+                const r = this.hide === 1 ? result.padStart(right.length,' ') : right;
+                const res = this.hide === 2 ? result.padStart((this.calc()+'').length,' ') : this.calc()+'';
+                return l + ' '+this.type+' ' +r +' = ' + res;
+            },
             calc: function() {
                 return left - right;
+            },
+            pseudoCalc: function(result) {
+                const resultAsInt = parseInt(result);
+                const l = this.hide === 0 ? resultAsInt : parseInt(left);
+                const r = this.hide === 1 ? resultAsInt : parseInt(right);
+                const res = this.hide === 2 ? resultAsInt : parseInt(l) - parseInt(r);
+                console.log('pseudoCalc',{l,r,res});
+                return l === left && r === right && this.calc() === res;
             }
         }
     }
@@ -111,7 +141,7 @@ function App() {
         const max = mode.max;
         const maxCalcs = 20;
         const type = getRandomInt(0, max);
-        return type % 2 === 0 ? buildPlus(max, maxCalcs) : buildMinus(max,maxCalcs);
+        return type % 2 === 0 ? buildPlus(max, maxCalcs, type) : buildMinus(max,maxCalcs, type);
     }
 
     const buildExcercises = () => {
@@ -131,10 +161,7 @@ function App() {
 
     const [onlyUnsolved, setOnlyUnsolved] = useState(false);
     const solve = () => {
-        let expected = excercise.calc(); //excercise.left + excercise.right;
-
-
-        if (parseInt(expected) === parseInt(result)) {
+        if (excercise.pseudoCalc(result)) {
             setSolvedValid(true);
             excercise.solved = true;
             //setShow(true);
