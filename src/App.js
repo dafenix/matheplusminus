@@ -61,13 +61,11 @@ function App() {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    const buildExcercise = () => {
-        const max = mode.max;
-        console.log('max', max);
+    const buildPlus = (max, maxCalcs) => {
         let left = 0;
         let right = 0;
-        const maxCalcs = 20;
         let calcs = 0;
+
         do {
             left = getRandomInt(1, max);
             right = getRandomInt(1, max);
@@ -77,9 +75,43 @@ function App() {
         return {
             left: left,
             right: right,
-            id: left + '' + right,
-            solved: undefined
+            id: left + '+' + right,
+            type: '+',
+            solved: undefined,
+            calc: function() {
+                return left + right;
+            }
         }
+    }
+
+    const buildMinus = (max, maxCalcs) => {
+        let left = 0;
+        let right = 0;
+        let calcs = 0;
+
+        do {
+            left = getRandomInt(1, max);
+            right = getRandomInt(1, left);
+            calcs++;
+        } while (left - right === 0 || calcs >= maxCalcs);
+
+        return {
+            left: left,
+            right: right,
+            id: left + '-' + right,
+            type: '-',
+            solved: undefined,
+            calc: function() {
+                return left - right;
+            }
+        }
+    }
+
+    const buildExcercise = () => {
+        const max = mode.max;
+        const maxCalcs = 20;
+        const type = getRandomInt(0, max);
+        return type % 2 === 0 ? buildPlus(max, maxCalcs) : buildMinus(max,maxCalcs);
     }
 
     const buildExcercises = () => {
@@ -99,7 +131,7 @@ function App() {
 
     const [onlyUnsolved, setOnlyUnsolved] = useState(false);
     const solve = () => {
-        let expected = excercise.left + excercise.right;
+        let expected = excercise.calc(); //excercise.left + excercise.right;
 
 
         if (parseInt(expected) === parseInt(result)) {

@@ -16,7 +16,7 @@ const Canvas = props => {
             ctx.font = fontSize + "px " + "Arial";
         } while (ctx.measureText(props.placeholder + '00').width > ctx.canvas.width)
         const lineHeight = ctx.measureText('M').width;
-        ctx.fillText(props.excercise.left + ' + ' +props.excercise.right +' = ' + props.result, 0, lineHeight + 20);
+        ctx.fillText(props.excercise.left + ' '+props.excercise.type+' ' +props.excercise.right +' = ' + props.result, 0, lineHeight + 20);
 
         //Placeholder for length of result to keep enough space
     }
