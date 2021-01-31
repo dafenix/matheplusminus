@@ -1,5 +1,5 @@
 import Canvas from "./Canvas";
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import './App.css';
 
 import Numpad from "./Numpad";
@@ -8,8 +8,25 @@ import {Nav, Navbar} from "react-bootstrap";
 import Splash from "./Splash";
 import SolvedModal from "./SolvedMessageBox";
 import Status from "./Status";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link,
+    withRouter, useHistory
+} from "react-router-dom";
+import Reward from "./Reward";
+import Options, {options} from "./Options";
+import {useLocalStorage} from "./useLocalStorage";
 
 function App() {
+    const history = useHistory();
+    const options = [
+        {min: 1, max: 10, description: 'Zahlen von 1 bis 10', isDefault: true},
+        {min: 1, max: 20, description: 'Zahlen von 1 bis 20', isDefault: false},
+        {min: 1, max: 50, description: 'Zahlen von 1 bis 50', isDefault: false},
+        {min: 1, max: 100, description: 'Zahlen von 1 bis 100', isDefault: false},
+    ];
 
     const [result, setResult] = useState('');
     const [excercise, setExcercise] = useState('');
@@ -18,15 +35,19 @@ function App() {
     const [splashVisible, setSplash] = useState(false);
     const [show, setShow] = useState(false);
     const [index, setIndex] = useState(0);
-
     const handleClose = () => setShow(false);
+    const [mode,] = useLocalStorage('mode', options[0]);
+
     useEffect(() => {
+        console.log('localstor', mode);
         if (!splashVisible) {
+            console.log('recalc', mode);
             const excercises = buildExcercises();
+            console.log('excercises', excercises);
             setExcercises(excercises);
             setExcercise(excercises[0]);
         }
-    }, [splashVisible]);
+    }, [splashVisible, mode]);
     /**
      * Returns a random integer between min (inclusive) and max (inclusive).
      * The value is no lower than min (or the next integer greater than min
@@ -41,7 +62,8 @@ function App() {
     }
 
     const buildExcercise = () => {
-        const max = 10;
+        const max = mode.max;
+        console.log('max', max);
         let left = 0;
         let right = 0;
         const maxCalcs = 20;
@@ -61,7 +83,7 @@ function App() {
     }
 
     const buildExcercises = () => {
-        const max = 2;
+        const max = 10;
         let excercises = [];
         let ids = [];
         for (let i = 0; i < max; i++) {
@@ -106,6 +128,7 @@ function App() {
 
         if (excercises.filter(e => e.solved === true).length === excercises.length) {
             console.log('fertig');
+            history.push("/reward");
         }
 
         setResult('');
@@ -126,32 +149,47 @@ function App() {
 
     }
 
+
     return (
         <div className="App">
             <>
                 <Navbar bg="dark" variant="dark">
                     <Navbar.Brand href="#home">Addiere und Subtrahiere</Navbar.Brand>
                     <Nav className="mr-auto">
-                        <Nav.Link href="#home" onSelect={() => {
+                        <Nav.Link href="/" onSelect={() => {
                             setResult('');
                             setSplash(true);
                         }}>Home</Nav.Link>
-                        <Nav.Link href="#features">Einstellungen</Nav.Link>
+                        <Nav.Link as={Link} to="/options">Einstellungen</Nav.Link>
+                        <Nav.Link as={Link} to="/reward">Belohnung</Nav.Link>
                     </Nav>
                 </Navbar>
             </>
-            <Status excercises={excercises}/>
-            <Splash visible={splashVisible} setVisible={setSplash}/>
 
-            {!splashVisible && <div>
-                <Canvas className="Canvas" excercise={excercise} result={result} placeholder={'00 + 00 = '}/>
-                <Numpad result={result} setResult={setResult}/>
-                <Button variant="success" block
-                        onClick={() => solve()}>Solve</Button>
-                <Button variant="danger" block
-                        onClick={() => setResult('')}>Clear</Button>
-            </div>}
-            <SolvedModal ok={solvedValid} show={show} handleClose={() => setShow(false)}/>
+            <Switch>
+                <Route path="/reward">
+                    <Reward/>
+                </Route>
+                <Route path="/options">
+                    <Options options={options}/>
+                </Route>
+
+                <Route path="/">
+                    <Status excercises={excercises}/>
+                    <Splash visible={splashVisible} setVisible={setSplash}/>
+
+                    {!splashVisible && <div>
+                        <Canvas className="Canvas" excercise={excercise} result={result}
+                                placeholder={'00 + 00 = '}/>
+                        <Numpad result={result} setResult={setResult}/>
+                        <Button variant="success" block
+                                onClick={() => solve()}>Lösen</Button>
+                        <Button variant="danger" block
+                                onClick={() => setResult('')}>Entfernen</Button>
+                    </div>}
+                    <SolvedModal ok={solvedValid} show={show} handleClose={() => setShow(false)}/>
+                </Route>
+            </Switch>
         </div>
     );
 
@@ -159,4 +197,4 @@ function App() {
 }
 
 
-export default App;
+export default withRouter(App);
