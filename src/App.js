@@ -19,11 +19,11 @@ import Reward from "./Reward";
 import Options, {options} from "./Options";
 import {useLocalStorage} from "./useLocalStorage";
 import {useMultiAudio} from "./MultiPlayer";
-import {sounds} from "./Sounds";
+//import {sounds} from "./Sounds";
 
 function App() {
     const history = useHistory();
-    const [, toggle] = useMultiAudio(sounds);
+    //const [, toggle] = useMultiAudio(sounds);
 
 
     const options = [
@@ -170,12 +170,12 @@ function App() {
         if (excercise.pseudoCalc(result)) {
             setSolvedValid(true);
             excercise.solved = true;
-            toggle(0)();
+            //toggle(0)();
             //setShow(true);
         } else {
             setSolvedValid(false);
             excercise.solved = false;
-            toggle(1)();
+            //toggle(1)();
             setShow(true);
         }
 
@@ -196,10 +196,10 @@ function App() {
         if (excercises.filter(e => e.solved === true).length === excercises.length) {
             console.log('fertig');
             setRewards({...rewards, roundCompleted: true});
-            toggle(2)();
+            //toggle(2)();
             setTimeout(function () {
                 history.push("/reward", {roundCompleted: true});
-            }, 3000);
+            }, 1000);
 
 
         }
