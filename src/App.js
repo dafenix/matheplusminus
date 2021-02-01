@@ -18,9 +18,14 @@ import {
 import Reward from "./Reward";
 import Options, {options} from "./Options";
 import {useLocalStorage} from "./useLocalStorage";
+import {useMultiAudio} from "./MultiPlayer";
+import {sounds} from "./Sounds";
 
 function App() {
     const history = useHistory();
+    const [, toggle] = useMultiAudio(sounds);
+
+
     const options = [
         {min: 1, max: 10, description: 'Zahlen von 1 bis 10', isDefault: true},
         {min: 1, max: 20, description: 'Zahlen von 1 bis 20', isDefault: false},
@@ -37,6 +42,7 @@ function App() {
     const [index, setIndex] = useState(0);
     const handleClose = () => setShow(false);
     const [mode,] = useLocalStorage('mode', options[0]);
+    const [rewards,setRewards] = useLocalStorage('rewards', null);
 
     useEffect(() => {
         console.log('localstor', mode);
@@ -80,20 +86,20 @@ function App() {
             solved: undefined,
             hide: random % 3 === 0 ? 0 : random % 2 === 0 ? 1 : 2,
             render: function (result) {
-                const l = this.hide === 0 ? result.padEnd(('00').length,'_') : left;
-                const r = this.hide === 1 ? result.padEnd(('00').length,'_') : right;
-                const res = this.hide === 2 ? result.padEnd(('00').length,'_') : this.calc()+'';
-                return l + ' '+this.type+' ' +r +' = ' + res;
+                const l = this.hide === 0 ? result.padEnd(('00').length, '_') : left;
+                const r = this.hide === 1 ? result.padEnd(('00').length, '_') : right;
+                const res = this.hide === 2 ? result.padEnd(('00').length, '_') : this.calc() + '';
+                return l + ' ' + this.type + ' ' + r + ' = ' + res;
             },
-            calc: function() {
+            calc: function () {
                 return left + right;
             },
-            pseudoCalc: function(result) {
+            pseudoCalc: function (result) {
                 const resultAsInt = parseInt(result);
                 const l = this.hide === 0 ? resultAsInt : parseInt(left);
                 const r = this.hide === 1 ? resultAsInt : parseInt(right);
                 const res = this.hide === 2 ? resultAsInt : parseInt(l) + parseInt(r);
-                console.log('pseudoCalc',{l,r,res});
+                console.log('pseudoCalc', {l, r, res});
                 return l === left && r === right && this.calc() === res;
             }
         }
@@ -118,20 +124,20 @@ function App() {
             solved: undefined,
             hide: random % 3 === 0 ? 0 : random % 2 === 0 ? 1 : 2,
             render: function (result) {
-                const l = this.hide === 0 ? result.padEnd(('00').length,'_') : left;
-                const r = this.hide === 1 ? result.padEnd(('00').length,'_') : right;
-                const res = this.hide === 2 ? result.padEnd(('00').length,'_') : this.calc()+'';
-                return l + ' '+this.type+' ' +r +' = ' + res;
+                const l = this.hide === 0 ? result.padEnd(('00').length, '_') : left;
+                const r = this.hide === 1 ? result.padEnd(('00').length, '_') : right;
+                const res = this.hide === 2 ? result.padEnd(('00').length, '_') : this.calc() + '';
+                return l + ' ' + this.type + ' ' + r + ' = ' + res;
             },
-            calc: function() {
+            calc: function () {
                 return left - right;
             },
-            pseudoCalc: function(result) {
+            pseudoCalc: function (result) {
                 const resultAsInt = parseInt(result);
                 const l = this.hide === 0 ? resultAsInt : parseInt(left);
                 const r = this.hide === 1 ? resultAsInt : parseInt(right);
                 const res = this.hide === 2 ? resultAsInt : parseInt(l) - parseInt(r);
-                console.log('pseudoCalc',{l,r,res});
+                console.log('pseudoCalc', {l, r, res});
                 return l === left && r === right && this.calc() === res;
             }
         }
@@ -141,11 +147,11 @@ function App() {
         const max = mode.max;
         const maxCalcs = 20;
         const type = getRandomInt(0, max);
-        return type % 2 === 0 ? buildPlus(max, maxCalcs, type) : buildMinus(max,maxCalcs, type);
+        return type % 2 === 0 ? buildPlus(max, maxCalcs, type) : buildMinus(max, maxCalcs, type);
     }
 
     const buildExcercises = () => {
-        const max = 10;
+        const max = 1;
         let excercises = [];
         let ids = [];
         for (let i = 0; i < max; i++) {
@@ -164,10 +170,12 @@ function App() {
         if (excercise.pseudoCalc(result)) {
             setSolvedValid(true);
             excercise.solved = true;
+            toggle(0)();
             //setShow(true);
         } else {
             setSolvedValid(false);
             excercise.solved = false;
+            toggle(1)();
             setShow(true);
         }
 
@@ -187,7 +195,13 @@ function App() {
 
         if (excercises.filter(e => e.solved === true).length === excercises.length) {
             console.log('fertig');
-            history.push("/reward");
+            setRewards({...rewards, roundCompleted: true});
+            toggle(2)();
+            setTimeout(function () {
+                history.push("/reward", {roundCompleted: true});
+            }, 3000);
+
+
         }
 
         setResult('');
@@ -240,11 +254,17 @@ function App() {
                     {!splashVisible && <div>
                         <Canvas className="Canvas" excercise={excercise} result={result}
                                 placeholder={'00 + 00 = '}/>
+                        <div className="solveButtonGroup">
+                            <Button variant="danger"
+                                    className="Item"
+                                    onClick={() => setResult('')}>Entfernen</Button>
+                            <Button variant="success"
+                                    className="Item"
+                                    onClick={() => solve()}>Lösen</Button>
+                        </div>
                         <Numpad result={result} setResult={setResult}/>
-                        <Button variant="success" block
-                                onClick={() => solve()}>Lösen</Button>
-                        <Button variant="danger" block
-                                onClick={() => setResult('')}>Entfernen</Button>
+
+
                     </div>}
                     <SolvedModal ok={solvedValid} show={show} handleClose={() => setShow(false)}/>
                 </Route>
