@@ -80,9 +80,9 @@ function App() {
             solved: undefined,
             hide: random % 3 === 0 ? 0 : random % 2 === 0 ? 1 : 2,
             render: function (result) {
-                const l = this.hide === 0 ? result.padStart(left.length,' ') : left;
-                const r = this.hide === 1 ? result.padStart(right.length,' ') : right;
-                const res = this.hide === 2 ? result.padStart((this.calc()+'').length,' ') : this.calc()+'';
+                const l = this.hide === 0 ? result.padEnd(('00').length,'_') : left;
+                const r = this.hide === 1 ? result.padEnd(('00').length,'_') : right;
+                const res = this.hide === 2 ? result.padEnd(('00').length,'_') : this.calc()+'';
                 return l + ' '+this.type+' ' +r +' = ' + res;
             },
             calc: function() {
@@ -118,9 +118,9 @@ function App() {
             solved: undefined,
             hide: random % 3 === 0 ? 0 : random % 2 === 0 ? 1 : 2,
             render: function (result) {
-                const l = this.hide === 0 ? result.padStart(left.length,' ') : left;
-                const r = this.hide === 1 ? result.padStart(right.length,' ') : right;
-                const res = this.hide === 2 ? result.padStart((this.calc()+'').length,' ') : this.calc()+'';
+                const l = this.hide === 0 ? result.padEnd(('00').length,'_') : left;
+                const r = this.hide === 1 ? result.padEnd(('00').length,'_') : right;
+                const res = this.hide === 2 ? result.padEnd(('00').length,'_') : this.calc()+'';
                 return l + ' '+this.type+' ' +r +' = ' + res;
             },
             calc: function() {

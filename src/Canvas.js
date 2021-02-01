@@ -22,10 +22,6 @@ const Canvas = props => {
         //Placeholder for length of result to keep enough space
     }
 
-
-
-
-
     useEffect(() => {
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
