@@ -37,7 +37,7 @@ function App() {
     const [excercise, setExcercise] = useState('');
     const [excercises, setExcercises] = useState([]);
     const [solvedValid, setSolvedValid] = useState(false);
-    const [splashVisible, setSplash] = useState(false);
+    const [splashVisible, setSplash] = useState(true);
     const [show, setShow] = useState(false);
     const [index, setIndex] = useState(0);
     const handleClose = () => setShow(false);
@@ -151,7 +151,7 @@ function App() {
     }
 
     const buildExcercises = () => {
-        const max = 1;
+        const max = 10;
         let excercises = [];
         let ids = [];
         for (let i = 0; i < max; i++) {
