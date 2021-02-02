@@ -55,6 +55,7 @@ Button {
     display: flex;
     margin: 5px;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 .rewardItem {
     display: block;

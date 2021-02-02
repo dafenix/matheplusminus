@@ -42,7 +42,18 @@ function App() {
     const [index, setIndex] = useState(0);
     const handleClose = () => setShow(false);
     const [mode,] = useLocalStorage('mode', options[0]);
-    const [rewards,setRewards] = useLocalStorage('rewards', null);
+    const [rewards,setRewards] = useLocalStorage('rewards', {
+        gangster: false,
+        smile: false,
+        giraffe: false,
+        sheep: false,
+        hippo: false,
+        tiger: false,
+        elephant: false,
+        goat: false,
+        background: true,
+        roundCompleted: null
+    });
 
     useEffect(() => {
         console.log('localstor', mode);
@@ -194,11 +205,11 @@ function App() {
         }
 
         if (excercises.filter(e => e.solved === true).length === excercises.length) {
-            console.log('fertig');
+            console.log('fertig',rewards);
             setRewards({...rewards, roundCompleted: true});
             //toggle(2)();
             setTimeout(function () {
-                history.push("/reward", {roundCompleted: true});
+                history.push("/reward", {roundCompleted: true, rewards: rewards});
             }, 1000);
 
 
@@ -241,7 +252,8 @@ function App() {
 
             <Switch>
                 <Route path="/reward">
-                    <Reward/>
+                    <Reward rewards={rewards}/>
+
                 </Route>
                 <Route path="/options">
                     <Options options={options}/>
