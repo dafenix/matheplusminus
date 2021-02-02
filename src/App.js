@@ -4,7 +4,7 @@ import './App.css';
 
 import Numpad from "./Numpad";
 import Button from "react-bootstrap/Button";
-import {Nav, Navbar} from "react-bootstrap";
+import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import Splash from "./Splash";
 import SolvedModal from "./SolvedMessageBox";
 import Status from "./Status";
@@ -236,19 +236,21 @@ function App() {
 
     return (
         <div className="App">
-            <>
-                <Navbar bg="dark" variant="dark">
-                    <Navbar.Brand href="#home">Addiere und Subtrahiere</Navbar.Brand>
+                <Navbar bg="dark" expand="lg" variant="dark" collapseOnSelect>
+                    <Navbar.Brand as={Link} to="/" href="#home">Addiere und Subtrahiere</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                    <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
                         <Nav.Link href="/" onSelect={() => {
                             setResult('');
                             setSplash(true);
                         }}>Home</Nav.Link>
-                        <Nav.Link as={Link} to="/options">Einstellungen</Nav.Link>
-                        <Nav.Link as={Link} to="/reward">Belohnung</Nav.Link>
+                        <Nav.Link href="#options" as={Link} to="/options">Einstellungen</Nav.Link>
+                        <Nav.Link href="#reward" as={Link} to="/reward">Belohnung</Nav.Link>
                     </Nav>
+                    </Navbar.Collapse>
                 </Navbar>
-            </>
+
 
             <Switch>
                 <Route path="/reward">
