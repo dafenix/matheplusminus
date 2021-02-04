@@ -1,5 +1,5 @@
 import Canvas from "./Canvas";
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import './App.css';
 
 import Numpad from "./Numpad";
@@ -19,6 +19,7 @@ import Reward from "./Reward";
 import Options, {options} from "./Options";
 import {useLocalStorage} from "./useLocalStorage";
 import {useMultiAudio} from "./MultiPlayer";
+import Attribution from "./Attribution";
 //import {sounds} from "./Sounds";
 
 function App() {
@@ -34,6 +35,9 @@ function App() {
     ];
 
     const [result, setResult] = useState('');
+    const validAnswerAudio = useRef(null);
+    const wrongAnswerAudio = useRef(null);
+    const roundCompletedAudio = useRef(null);
     const [excercise, setExcercise] = useState('');
     const [excercises, setExcercises] = useState([]);
     const [solvedValid, setSolvedValid] = useState(false);
@@ -56,11 +60,19 @@ function App() {
     });
 
     useEffect(() => {
-        console.log('localstor', mode);
+        // We only want to load the sound when root domain was called
+        if (history.location.pathname === "/") {
+            fetch('./Sounds.json').then(function (response){
+                return response.json();
+            }).then(function (data){
+                validAnswerAudio.current.src = data.correctAnswer;
+                wrongAnswerAudio.current.src = data.incorrectAnswer;
+                roundCompletedAudio.current.src = data.roundCompleted;
+            });
+        }
+
         if (!splashVisible) {
-            console.log('recalc', mode);
             const excercises = buildExcercises();
-            console.log('excercises', excercises);
             setExcercises(excercises);
             setExcercise(excercises[0]);
         }
@@ -162,7 +174,7 @@ function App() {
     }
 
     const buildExcercises = () => {
-        const max = 10;
+        const max = 1;
         let excercises = [];
         let ids = [];
         for (let i = 0; i < max; i++) {
@@ -178,14 +190,17 @@ function App() {
 
     const [onlyUnsolved, setOnlyUnsolved] = useState(false);
     const solve = () => {
+
         if (excercise.pseudoCalc(result)) {
             setSolvedValid(true);
             excercise.solved = true;
+            validAnswerAudio.current.play();
             //toggle(0)();
             //setShow(true);
         } else {
             setSolvedValid(false);
             excercise.solved = false;
+            wrongAnswerAudio.current.play();
             //toggle(1)();
             setShow(true);
         }
@@ -206,11 +221,12 @@ function App() {
 
         if (excercises.filter(e => e.solved === true).length === excercises.length) {
             console.log('fertig',rewards);
+            roundCompletedAudio.current.play();
             setRewards({...rewards, roundCompleted: true});
             //toggle(2)();
             setTimeout(function () {
                 history.push("/reward", {roundCompleted: true, rewards: rewards});
-            }, 1000);
+            }, 3000);
 
 
         }
@@ -247,6 +263,7 @@ function App() {
                         }}>Home</Nav.Link>
                         <Nav.Link href="#options" as={Link} to="/options">Einstellungen</Nav.Link>
                         <Nav.Link href="#reward" as={Link} to="/reward">Belohnung</Nav.Link>
+                        <Nav.Link href="#attribution" as={Link} to="/attribution">Attribution</Nav.Link>
                     </Nav>
                     </Navbar.Collapse>
                 </Navbar>
@@ -260,8 +277,14 @@ function App() {
                 <Route path="/options">
                     <Options options={options}/>
                 </Route>
+                <Route path="/attribution">
+                    <Attribution />
+                </Route>
 
                 <Route path="/">
+                    <audio ref={validAnswerAudio} src="" preload="auto"></audio>
+                    <audio ref={wrongAnswerAudio} src="" preload="auto"></audio>
+                    <audio ref={roundCompletedAudio} src="" preload="auto"></audio>
                     <Status excercises={excercises}/>
                     <Splash visible={splashVisible} setVisible={setSplash}/>
 

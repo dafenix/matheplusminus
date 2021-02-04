@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import lemming from './lemmling_Cartoon_dog.svg'
+import lemming from './svgs/lemmling_Cartoon_dog.svg'
 import Button from "react-bootstrap/Button";
 import {useMultiAudio} from "./MultiPlayer";
+//import {sounds} from "./Sounds";
+import {useLocalStorage} from "./useLocalStorage";
 function Splash(props) {
-    //const [, toggle] = useMultiAudio([""]);
+    //const [, toggle] = useMultiAudio([sounds[0]]);
+    const [,setSounds] = useLocalStorage('sounds',null);
 
     useEffect(() => {
 
