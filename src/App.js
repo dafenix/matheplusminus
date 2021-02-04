@@ -174,7 +174,7 @@ function App() {
     }
 
     const buildExcercises = () => {
-        const max = 1;
+        const max = 10;
         let excercises = [];
         let ids = [];
         for (let i = 0; i < max; i++) {
