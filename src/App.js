@@ -28,10 +28,10 @@ function App() {
 
 
     const options = [
-        {min: 1, max: 10, description: 'Zahlen von 1 bis 10', isDefault: true},
-        {min: 1, max: 20, description: 'Zahlen von 1 bis 20', isDefault: false},
-        {min: 1, max: 50, description: 'Zahlen von 1 bis 50', isDefault: false},
-        {min: 1, max: 100, description: 'Zahlen von 1 bis 100', isDefault: false},
+        {min: 1, max: 10, skipDifferencesOf: 2, description: 'Zahlen von 1 bis 10', isDefault: true},
+        {min: 1, max: 20, skipDifferencesOf: 3, description: 'Zahlen von 1 bis 20', isDefault: false},
+        {min: 1, max: 50, skipDifferencesOf: 3, description: 'Zahlen von 1 bis 50', isDefault: false},
+        {min: 1, max: 100, skipDifferencesOf: 3, description: 'Zahlen von 1 bis 100', isDefault: false},
     ];
 
     const [result, setResult] = useState('');
@@ -99,7 +99,7 @@ function App() {
             left = getRandomInt(1, max);
             right = getRandomInt(1, max);
             calcs++;
-        } while (left + right > max || calcs >= maxCalcs);
+        } while ((left <= mode.skipDifferencesOf || right <= mode.skipDifferencesOf) || left + right > max || calcs <= maxCalcs);
 
         return {
             left: left,
@@ -122,7 +122,6 @@ function App() {
                 const l = this.hide === 0 ? resultAsInt : parseInt(left);
                 const r = this.hide === 1 ? resultAsInt : parseInt(right);
                 const res = this.hide === 2 ? resultAsInt : parseInt(l) + parseInt(r);
-                console.log('pseudoCalc', {l, r, res});
                 return l === left && r === right && this.calc() === res;
             }
         }
@@ -137,7 +136,7 @@ function App() {
             left = getRandomInt(1, max);
             right = getRandomInt(1, left);
             calcs++;
-        } while (left - right === 0 || calcs >= maxCalcs);
+        } while (left - right === 0 || calcs <= maxCalcs || left <= mode.skipDifferencesOf || right <= mode.skipDifferencesOf || Math.abs(left - right) < mode.skipDifferencesOf);
 
         return {
             left: left,
@@ -160,7 +159,6 @@ function App() {
                 const l = this.hide === 0 ? resultAsInt : parseInt(left);
                 const r = this.hide === 1 ? resultAsInt : parseInt(right);
                 const res = this.hide === 2 ? resultAsInt : parseInt(l) - parseInt(r);
-                console.log('pseudoCalc', {l, r, res});
                 return l === left && r === right && this.calc() === res;
             }
         }
