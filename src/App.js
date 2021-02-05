@@ -9,7 +9,6 @@ import Splash from "./Splash";
 import SolvedModal from "./SolvedMessageBox";
 import Status from "./Status";
 import {
-    BrowserRouter as Router,
     Switch,
     Route,
     Link,
@@ -18,14 +17,10 @@ import {
 import Reward from "./Reward";
 import Options, {options} from "./Options";
 import {useLocalStorage} from "./useLocalStorage";
-import {useMultiAudio} from "./MultiPlayer";
 import Attribution from "./Attribution";
-//import {sounds} from "./Sounds";
 
 function App() {
     const history = useHistory();
-    //const [, toggle] = useMultiAudio(sounds);
-
 
     const options = [
         {min: 1, max: 10, skipDifferencesOf: 2, description: 'Zahlen von 1 bis 10', isDefault: true},

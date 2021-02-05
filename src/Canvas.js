@@ -16,10 +16,9 @@ const Canvas = props => {
             fontSize--;
             ctx.font = fontSize + "px " + "Arial";
         } while (ctx.measureText(props.placeholder + '00').width > ctx.canvas.width)
+        // Hack to calculate the lineHeight as close as possible.
         const lineHeight = ctx.measureText('M').width;
         ctx.fillText(props.excercise.render(props.result), 0, lineHeight + 20);
-
-        //Placeholder for length of result to keep enough space
     }
 
     useEffect(() => {
@@ -28,7 +27,6 @@ const Canvas = props => {
         let frameCount = 0
         let animationFrameId
 
-        //Our draw came here
         const render = () => {
             frameCount++
             draw(context, frameCount)

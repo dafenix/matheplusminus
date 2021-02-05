@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from 'react';
-import lemming from "./svgs/lemmling_Cartoon_dog.svg";
 import glasses from "./svgs/glasses.svg";
 import mouth from "./svgs/mouth.svg";
 import GiraffeItem from "./svgs/lemmling-Cartoon-giraffe.svg";
@@ -8,8 +7,6 @@ import HippoItem from "./svgs/StudioFibonacci-Cartoon-hippo.svg";
 import TigerItem from "./svgs/Cartoon-tiger.svg";
 import GoatItem from "./svgs/lemmling-Cartoon-goat.svg";
 import ElephantItem from "./svgs/lemmling-Cartoon-elephant.svg";
-import BackgroundItem from "./svgs/redbarn-01.svg";
-import {Badge, ProgressBar} from "react-bootstrap";
 import {useLocalStorage} from "./useLocalStorage";
 import {useHistory, useLocation} from "react-router-dom";
 import AnimalFamily from "./AnimalFamily";
@@ -45,8 +42,6 @@ function Reward(props) {
                           goat={rewards.goat ? 1 : 0}
 
             />
-            {/*<Dog smile={rewards.smile} gangster={rewards.gangster}/>*/}
-            {/*{rewards.giraffe && <Giraffe/>}*/}
             <div style={{flexBasis: "100%", height: 0}}></div>
             {rewards && rewards.roundCompleted === true && (history.location.state && history.location.state.roundCompleted === true) && <div>
                 <div className="rewardItems">
@@ -58,7 +53,6 @@ function Reward(props) {
                     <img className="rewardItem" src={TigerItem} onClick={() => selectReward('tiger', !rewards.tiger)}/>
                     <img className="rewardItem" src={ElephantItem} onClick={() => selectReward('elephant', !rewards.elephant)}/>
                     <img className="rewardItem" src={GoatItem} onClick={() => selectReward('goat', !rewards.goat)}/>
-                    {/*<img className="rewardItem" src={BackgroundItem} onClick={() => selectReward('background', !rewards.background)}/>*/}
                 </div>
 
             </div>}

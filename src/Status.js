@@ -5,9 +5,6 @@ function Status(props) {
         <div className="status">
             {props.excercises && props.excercises.map((value, index) => {
                 let color = colors[0];
-                /*if (props.results && props.results.length > index) {
-                    color = props.results[index] ? colors[1] : props.results[index] === undefined ? colors[0] : colors[2];
-                }*/
                 const ex = props.excercises[index];
                 if (ex.solved === undefined) {
                     color = colors[0];
